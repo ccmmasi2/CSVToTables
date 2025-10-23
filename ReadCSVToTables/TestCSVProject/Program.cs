@@ -4,6 +4,6 @@ class Program
 {
     static void Main(string[] args)
     {
-        ReadCSVToSelectTable.Main(args);
+        ReadCSVToCreateTable.Main(args);
     }
 }

@@ -6,7 +6,7 @@ namespace ReadCSVToTables
     {
         public static void Main(string[] args)
         {
-            string csvPath = @"C:\scripts\tablas.csv";
+            string csvPath = @"D:\\Repository\\Study\\columns.csv";
 
             if (!File.Exists(csvPath))
             {
@@ -50,7 +50,10 @@ namespace ReadCSVToTables
                 sb.AppendLine($"-- ========================================");
                 sb.AppendLine($"-- SCHEMA: {table.Key.Schema} | TABLE: {table.Key.Table}");
                 sb.AppendLine($"-- ========================================");
-                sb.AppendLine($"CREATE SCHEMA IF NOT EXISTS [{table.Key.Schema}];");
+                sb.AppendLine($"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = '{table.Key.Schema}')");
+                sb.AppendLine($"BEGIN");
+                sb.AppendLine($"EXEC('CREATE SCHEMA [{table.Key.Schema}]');");
+                sb.AppendLine($"END");
                 sb.AppendLine("GO");
                 sb.AppendLine();
 
@@ -68,6 +71,9 @@ namespace ReadCSVToTables
                     {
                         lengthPart = $"({col.Length})";
                     }
+
+                    if(lengthPart == "(-1)")
+                        lengthPart = "(MAX)";
 
                     string nullPart = col.IsNullable == "NO" ? "NOT NULL" : "NULL";
                     string comma = (i < cols.Count - 1) ? "," : "";
